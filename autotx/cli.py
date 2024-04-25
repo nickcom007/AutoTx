@@ -60,7 +60,7 @@ def run(prompt: str, non_interactive: bool):
     autotx = AutoTx(manager, network_info, [
         SendTokensAgent.build_agent_factory(),
         SwapTokensAgent.build_agent_factory(client, manager.address),
-        ResearchTokensAgent.build_agent_factory()
+        # ResearchTokensAgent.build_agent_factory()
     ], None)
     autotx.run(prompt, non_interactive)
 

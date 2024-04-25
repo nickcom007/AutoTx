@@ -4,6 +4,7 @@ from textwrap import dedent
 from crewai import Agent, Task
 import openai
 
+
 def define_tasks(goal: str, agents_information: str, agents: list[Agent]) -> list[Task]:
     template = dedent(
         """
@@ -23,9 +24,9 @@ def define_tasks(goal: str, agents_information: str, agents: list[Agent]) -> lis
 
         The specific tasks will be created based on the available agents role, goal and available tools:
         {agents_information}
-        
+
         Please note: You can only output content in json format, and do not output any other content!
-        
+
         You can refer to the following examples:
         Goal: Send 1 ETH from the address 0x5d15311D760511d89cFad67404131cdc155E9FDB to the ENS domain vitalik.eth.
         Output:
@@ -44,7 +45,7 @@ def define_tasks(goal: str, agents_information: str, agents: list[Agent]) -> lis
                 "extra_information": "Use the output of the first task to ensure there is enough balance before proceeding."
             }}]
         }}
-        
+
         Goal: Execute a swap from ETH to 100 USDC for the user's address 0x5d15311D760511d89cFad67404131cdc155E9FDB
         Output:
         {{
@@ -60,19 +61,19 @@ def define_tasks(goal: str, agents_information: str, agents: list[Agent]) -> lis
                     "task": "Calculate ETH amount needed to swap for 100 USDC",
                     "agent": "swap-tokens",     
                     "expected_output": "The amount of ETH needed to execute a swap to receive 100 USDC",
-                    "context": null,
+                    "context": [0],
                     "extra_information": "Assuming the swap service or agent has the capability to estimate, based on existing market rates, how much ETH is required."
                 }},
                 {{
                     "task": "Build transactions needed to execute the swap from ETH to 100 USDC",
                     "agent": "swap-tokens",
                     "expected_output": "Transactions prepared for swapping ETH to exactly 100 USDC",
-                    "context": [2],
+                    "context": [1],
                     "extra_information": "Use the calculated ETH amount from the previous step to prepare the necessary transactions for the swap, ensuring that the exact_input is set to True since we want to receive an exact amount of USDC."
                 }}
             ]
         }}
-        
+
         Goal: First, swap Ethereum (ETH) to 0.05 Wrapped Bitcoin (WBTC), ensuring the right amount of ETH is swapped for exactly 0.05 WBTC. After successfully swapping to WBTC, proceed to swap WBTC to 1000 USD Coin (USDC), making sure to receive exactly 1000 USDC from the swap. Following these swaps, transfer 50 USDC to the Ethereum Name Service (ENS) domain 'vitalik.eth'.
         Output:
         {{
@@ -100,11 +101,18 @@ def define_tasks(goal: str, agents_information: str, agents: list[Agent]) -> lis
                 }}
             ]
         }}
-        
+
         OK, start now!
         Please note: You can only output content in json format, and do not output any other content!
         Goal: {goal}
         Output:
+        """
+    )
+
+    # Mistral must have a system prompt
+    system_prompt = dedent(
+        """
+        You are a helpful assistant.
         """
     )
 
@@ -116,7 +124,9 @@ def define_tasks(goal: str, agents_information: str, agents: list[Agent]) -> lis
     response = openai.chat.completions.create(
         model=os.environ.get("OPENAI_MODEL_NAME", "gpt-4-turbo-preview"),
         response_format={"type": "json_object"},
-        messages=[{"role": "user", "content": formatted_template}],
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": formatted_template}],
     )
     response = response.choices[0].message.content
     if not response:
@@ -130,6 +140,7 @@ def define_tasks(goal: str, agents_information: str, agents: list[Agent]) -> lis
     print("Tasks", response)
 
     return sanitize_tasks_response(response, agents)
+
 
 def sanitize_tasks_response(response: str, agents: list[Agent]) -> list[Task]:
     tasks = json.loads(response)["tasks"]
