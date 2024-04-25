@@ -42,6 +42,7 @@ If port 8002 is open for inbound protocols, modify the `.env` file with these se
 ```
 OPENAI_API_BASE=http://your.ip:8002/v1
 OPENAI_BASE_URL=http://your.ip:8002
+OPENAI_MODEL_NAME=AutoTx_Mistral_7B
 OPENAI_API_KEY=EMPTY
 ```
 You may specify a custom value for `OPENAI_API_KEY` if you included the `api-key` parameter in the vLLM start command.
