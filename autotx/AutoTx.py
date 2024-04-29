@@ -50,7 +50,7 @@ class AutoTx:
             tasks=tasks,
             verbose=self.config.verbose,
             process=Process.sequential,
-            function_calling_llm=open_ai_llm,
+            # function_calling_llm=open_ai_llm,
         ).kickoff()
 
         self.manager.send_tx_batch(self.transactions, require_approval=not non_interactive)

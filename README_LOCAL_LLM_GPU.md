@@ -41,7 +41,7 @@ INFO:     Uvicorn running on http://0.0.0.0:8002 (Press CTRL+C to quit)
 If port 8002 is open for inbound protocols, modify the `.env` file with these settings:
 ```
 OPENAI_API_BASE=http://your.ip:8002/v1
-OPENAI_BASE_URL=http://your.ip:8002
+OPENAI_BASE_URL=http://your.ip:8002/v1
 OPENAI_MODEL_NAME=AutoTx_Mistral_7B
 OPENAI_API_KEY=EMPTY
 ```
