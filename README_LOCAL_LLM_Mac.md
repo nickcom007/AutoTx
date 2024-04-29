@@ -13,9 +13,9 @@ git clone https://github.com/ggerganov/llama.cpp
 Download the finetuned Mistral_7B model appropriate for Mac from HuggingFace. Ensure you have `git lfs` installed to handle large files:
 
 ```bash
-git lfs clone https://huggingface.co/Superoisesuki/Mistral_7B_CrewAI
+git lfs clone https://huggingface.co/flock-io/Mistral-7B-CrewAI
 ```
-Note: Choose the model with a 'gguf' suffix. The Q4 precision model is recommended for lower memory usage.
+Note: Choose the model with a 'gguf' suffix. The Q4 precision model is recommended for lower memory usage, while the Q8 precision model and full parameter precision is recommended for higher accuracy.
 
 ## Step 3: Navigate to the llama.cpp Directory
 Change your current working directory to the cloned llama.cpp directory:
